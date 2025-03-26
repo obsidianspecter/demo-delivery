@@ -23,6 +23,7 @@ export const addOrder = (items: CartItem[], totalPrice: number, tableNumber: str
     status: "Pending",
     tableNumber,
     createdAt: new Date(),
+    updatedAt: new Date(),
   }
 
   orders = [...orders, newOrder]
@@ -48,7 +49,17 @@ export const updateOrderStatus = (orderId: string, status: Order["status"]): boo
     return false
   }
 
-  orders = orders.map((order) => (order.id === orderId ? { ...order, status, updatedAt: new Date() } : order))
+  orders = orders.map((order) => 
+    order.id === orderId 
+      ? { 
+          ...order, 
+          status, 
+          updatedAt: new Date(),
+          // Ensure createdAt is a Date object
+          createdAt: order.createdAt instanceof Date ? order.createdAt : new Date(order.createdAt)
+        } 
+      : order
+  )
 
   notifyListeners()
   return true
@@ -56,16 +67,32 @@ export const updateOrderStatus = (orderId: string, status: Order["status"]): boo
 
 // Get a specific order
 export const getOrder = (orderId: string): Order | undefined => {
-  return orders.find((order) => order.id === orderId)
+  const order = orders.find((order) => order.id === orderId)
+  if (!order) return undefined
+
+  // Ensure dates are Date objects
+  return {
+    ...order,
+    createdAt: order.createdAt instanceof Date ? order.createdAt : new Date(order.createdAt),
+    updatedAt: order.updatedAt ? (order.updatedAt instanceof Date ? order.updatedAt : new Date(order.updatedAt)) : undefined
+  }
 }
 
 // Custom hook to subscribe to order updates
 export const useOrders = () => {
-  const [currentOrders, setCurrentOrders] = useState<Order[]>(orders)
+  const [currentOrders, setCurrentOrders] = useState<Order[]>(orders.map(order => ({
+    ...order,
+    createdAt: order.createdAt instanceof Date ? order.createdAt : new Date(order.createdAt),
+    updatedAt: order.updatedAt ? (order.updatedAt instanceof Date ? order.updatedAt : new Date(order.updatedAt)) : undefined
+  })))
 
   useEffect(() => {
     const handleOrdersUpdate = (updatedOrders: Order[]) => {
-      setCurrentOrders(updatedOrders)
+      setCurrentOrders(updatedOrders.map(order => ({
+        ...order,
+        createdAt: order.createdAt instanceof Date ? order.createdAt : new Date(order.createdAt),
+        updatedAt: order.updatedAt ? (order.updatedAt instanceof Date ? order.updatedAt : new Date(order.updatedAt)) : undefined
+      })))
     }
 
     listeners.push(handleOrdersUpdate)
@@ -90,7 +117,13 @@ export const useOrder = (orderId: string | undefined) => {
 
     const handleOrdersUpdate = (updatedOrders: Order[]) => {
       const updatedOrder = updatedOrders.find((o) => o.id === orderId)
-      setOrder(updatedOrder)
+      if (updatedOrder) {
+        setOrder({
+          ...updatedOrder,
+          createdAt: updatedOrder.createdAt instanceof Date ? updatedOrder.createdAt : new Date(updatedOrder.createdAt),
+          updatedAt: updatedOrder.updatedAt ? (updatedOrder.updatedAt instanceof Date ? updatedOrder.updatedAt : new Date(updatedOrder.updatedAt)) : undefined
+        })
+      }
     }
 
     listeners.push(handleOrdersUpdate)
@@ -114,6 +147,7 @@ export function updateOrderTable(orderId: string, tableNumber: string) {
     ...orders[orderIndex],
     tableNumber,
     updatedAt: new Date(),
+    createdAt: orders[orderIndex].createdAt instanceof Date ? orders[orderIndex].createdAt : new Date(orders[orderIndex].createdAt)
   }
 }
 

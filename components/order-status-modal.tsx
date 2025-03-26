@@ -73,6 +73,16 @@ export default function OrderStatusModal({ isOpen, onClose, order, onTableChange
   // Generate a unique key for the status
   const statusKey = `${order.id}-${deliveryStatus || order.status}`
 
+  // Safely format the date
+  const formatOrderTime = (date: Date) => {
+    try {
+      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    } catch (error) {
+      console.error("Error formatting date:", error)
+      return "N/A"
+    }
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -103,7 +113,7 @@ export default function OrderStatusModal({ isOpen, onClose, order, onTableChange
                         View Bill
                       </Button>
                       <span className="text-sm text-slate-500">
-                        {order.createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        {formatOrderTime(order.createdAt)}
                       </span>
                     </div>
                   </div>
