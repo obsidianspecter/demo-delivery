@@ -18,7 +18,34 @@ export default function OrderBill({ isOpen, onClose, order }: OrderBillProps) {
   if (!order) return null
 
   const handlePrint = () => {
+    // Add print-specific styles
+    const style = document.createElement('style')
+    style.textContent = `
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        .bill-content, .bill-content * {
+          visibility: visible;
+        }
+        .bill-content {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          padding: 20px;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    `
+    document.head.appendChild(style)
+
     window.print()
+
+    // Remove the styles after printing
+    document.head.removeChild(style)
   }
 
   // Generate a payment URL (this would be replaced with your actual payment gateway URL)
@@ -42,7 +69,7 @@ export default function OrderBill({ isOpen, onClose, order }: OrderBillProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+        <DialogHeader className="no-print">
           <DialogTitle className="text-xl gradient-text">Order Bill</DialogTitle>
           <DialogDescription>View and print your order bill</DialogDescription>
         </DialogHeader>
