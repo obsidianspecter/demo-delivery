@@ -6,22 +6,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Bell } from "lucide-react"
-import { initializeApp } from "firebase/app"
-import { getFirestore, collection, onSnapshot, query, where, orderBy, limit } from "firebase/firestore"
-
-// Firebase configuration - replace with your own config
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-}
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+import { db } from "@/lib/firebase"
+import { collection, onSnapshot, query, where, orderBy, limit } from "firebase/firestore"
 
 interface NotificationSettings {
   newOrders: boolean
