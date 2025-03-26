@@ -38,28 +38,28 @@ export default function OrderStatusModal({ isOpen, onClose, order, onTableChange
   const [showBotTracker, setShowBotTracker] = useState(false)
   const [showTableDialog, setShowTableDialog] = useState(false)
   const [showBillDialog, setShowBillDialog] = useState(false)
-  const deliveryStatus = order ? useOrderDelivery(order) : undefined
+  const deliveryStatus = useOrderDelivery(order)
 
   useEffect(() => {
-    if (order) {
-      switch (deliveryStatus || order.status) {
-        case "Pending":
-          setProgress(25)
-          setShowBotTracker(false)
-          break
-        case "Preparing":
-          setProgress(50)
-          setShowBotTracker(false)
-          break
-        case "Ready for Delivery":
-          setProgress(75)
-          setShowBotTracker(true)
-          break
-        case "Delivered":
-          setProgress(100)
-          setShowBotTracker(false)
-          break
-      }
+    if (!order) return
+
+    switch (deliveryStatus || order.status) {
+      case "Pending":
+        setProgress(25)
+        setShowBotTracker(false)
+        break
+      case "Preparing":
+        setProgress(50)
+        setShowBotTracker(false)
+        break
+      case "Ready for Delivery":
+        setProgress(75)
+        setShowBotTracker(true)
+        break
+      case "Delivered":
+        setProgress(100)
+        setShowBotTracker(false)
+        break
     }
   }, [order, deliveryStatus])
 
@@ -278,19 +278,19 @@ function StatusStep({ icon, title, description, isCompleted, isActive, delay }: 
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay }}
-      className={`flex items-start space-x-3 rounded-lg p-3 ${
-        isActive ? "bg-primary/10" : isCompleted ? "bg-green-50" : "bg-slate-50"
+      className={`flex items-start gap-3 rounded-lg p-3 ${
+        isActive ? "bg-primary/10" : isCompleted ? "bg-slate-100" : "bg-slate-50"
       }`}
     >
       <div
         className={`mt-1 rounded-full p-1 ${
-          isActive ? "bg-primary text-white" : isCompleted ? "bg-green-500 text-white" : "bg-slate-200"
+          isActive ? "bg-primary text-white" : isCompleted ? "bg-slate-400 text-white" : "bg-slate-200"
         }`}
       >
         {icon}
       </div>
       <div>
-        <h4 className={`font-medium ${isActive ? "text-primary" : isCompleted ? "text-green-700" : "text-slate-700"}`}>
+        <h4 className={`font-medium ${isActive ? "text-primary" : isCompleted ? "text-slate-700" : "text-slate-500"}`}>
           {title}
         </h4>
         <p className="text-sm text-slate-500">{description}</p>
