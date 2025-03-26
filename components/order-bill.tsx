@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { QRCodeSVG } from "qrcode.react"
 import { motion } from "framer-motion"
@@ -11,22 +11,40 @@ import type { Order } from "@/lib/sample-data"
 interface OrderBillProps {
   isOpen: boolean
   onClose: () => void
-  order: Order
+  order: Order | undefined
 }
 
 export default function OrderBill({ isOpen, onClose, order }: OrderBillProps) {
+  if (!order) return null
+
   const handlePrint = () => {
     window.print()
   }
 
   // Generate a payment URL (this would be replaced with your actual payment gateway URL)
-  const paymentUrl = `https://payment.example.com/order/${order.id}?amount=${order.total}`
+  const paymentUrl = `https://payment.example.com/order/${order.id}?amount=${order.totalPrice}`
+
+  // Safely format numbers
+  const formatPrice = (price: number) => {
+    try {
+      return price.toFixed(2)
+    } catch (error) {
+      console.error("Error formatting price:", error)
+      return "0.00"
+    }
+  }
+
+  // Calculate totals
+  const subtotal = order.totalPrice || 0
+  const tax = subtotal * 0.1
+  const total = subtotal + tax
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="no-print">
+        <DialogHeader>
           <DialogTitle className="text-xl gradient-text">Order Bill</DialogTitle>
+          <DialogDescription>View and print your order bill</DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
@@ -64,23 +82,23 @@ export default function OrderBill({ isOpen, onClose, order }: OrderBillProps) {
                     <tr key={`${item.id}-${index}`} className="border-b">
                       <td className="py-2">{item.name}</td>
                       <td className="text-right py-2">{item.quantity}</td>
-                      <td className="text-right py-2">${item.price.toFixed(2)}</td>
-                      <td className="text-right py-2">${(item.price * item.quantity).toFixed(2)}</td>
+                      <td className="text-right py-2">${formatPrice(item.price)}</td>
+                      <td className="text-right py-2">${formatPrice(item.price * item.quantity)}</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
                   <tr>
                     <td colSpan={3} className="pt-2 text-right font-medium">Subtotal:</td>
-                    <td className="pt-2 text-right font-medium">${order.total.toFixed(2)}</td>
+                    <td className="pt-2 text-right font-medium">${formatPrice(subtotal)}</td>
                   </tr>
                   <tr>
                     <td colSpan={3} className="pt-2 text-right font-medium">Tax (10%):</td>
-                    <td className="pt-2 text-right font-medium">${(order.total * 0.1).toFixed(2)}</td>
+                    <td className="pt-2 text-right font-medium">${formatPrice(tax)}</td>
                   </tr>
                   <tr>
                     <td colSpan={3} className="pt-2 text-right font-bold">Total:</td>
-                    <td className="pt-2 text-right font-bold">${(order.total * 1.1).toFixed(2)}</td>
+                    <td className="pt-2 text-right font-bold">${formatPrice(total)}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -113,7 +131,7 @@ export default function OrderBill({ isOpen, onClose, order }: OrderBillProps) {
             </Button>
             <Button variant="outline" className="w-full" onClick={() => navigator.share?.({
               title: "Order Bill",
-              text: `Order #${order.id.slice(-4)} - Total: $${(order.total * 1.1).toFixed(2)}`,
+              text: `Order #${order.id.slice(-4)} - Total: $${formatPrice(total)}`,
               url: paymentUrl
             }).catch(() => {})}>
               <Share2 className="mr-2 h-4 w-4" />

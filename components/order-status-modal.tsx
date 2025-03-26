@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Clock, CookingPot, Bot, Table, Users, Receipt } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -88,11 +88,12 @@ export default function OrderStatusModal({ isOpen, onClose, order, onTableChange
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
           <DialogContent className="sm:max-w-md">
-            <motion.div initial="hidden" animate="visible" exit="exit" variants={scaleUp}>
-              <DialogHeader>
-                <DialogTitle className="text-xl gradient-text">Order Status</DialogTitle>
-              </DialogHeader>
+            <DialogHeader>
+              <DialogTitle className="text-xl gradient-text">Order Status</DialogTitle>
+              <DialogDescription>Track your order progress and delivery status</DialogDescription>
+            </DialogHeader>
 
+            <motion.div initial="hidden" animate="visible" exit="exit" variants={scaleUp}>
               <div className="py-4">
                 <motion.div
                   className="mb-4 rounded-lg bg-gradient-to-r from-primary/5 to-accent/5 p-4"
@@ -231,6 +232,7 @@ export default function OrderStatusModal({ isOpen, onClose, order, onTableChange
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Select Your Table</DialogTitle>
+            <DialogDescription>Choose a table for your order</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4 py-4">
             {AVAILABLE_TABLES.map((table) => (
