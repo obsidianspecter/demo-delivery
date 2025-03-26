@@ -3,23 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { initializeApp } from "firebase/app"
-import { getFirestore } from "firebase/firestore"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
-
-// Firebase configuration - replace with your own config
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-}
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
 
 // Chart colors
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"]
@@ -35,9 +19,6 @@ export default function AnalyticsDashboard() {
     const fetchAnalyticsData = async () => {
       try {
         setLoading(true)
-
-        // For demo purposes, we'll generate sample data
-        // In a real app, you would query Firestore for this data
 
         // Sample data for orders by day
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -76,7 +57,7 @@ export default function AnalyticsDashboard() {
         ]
         setRevenueByCategory(sampleRevenueByCategory)
       } catch (error) {
-        console.error("Error fetching analytics data:", error)
+        console.error("Error generating analytics data:", error)
       } finally {
         setLoading(false)
       }
