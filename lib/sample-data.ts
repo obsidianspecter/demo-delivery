@@ -999,32 +999,55 @@ export const sampleOrders: Order[] = [
   {
     id: "order-1",
     items: [
-      { ...sampleMenuItems.find((item) => item.id === "burger-1")!, quantity: 2 },
-      { ...sampleMenuItems.find((item) => item.id === "appetizer-1")!, quantity: 1 },
+      {
+        id: "burger-1",
+        name: "Classic Burger",
+        description: "Juicy beef patty with lettuce, tomato, and special sauce",
+        price: 12.99,
+        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&h=400&fit=crop",
+        category: "Burgers",
+        popular: true,
+        preparationTime: 15,
+        quantity: 2,
+      },
+      {
+        id: "pizza-1",
+        name: "Margherita Pizza",
+        description: "Fresh mozzarella, tomatoes, and basil on a thin crust",
+        price: 14.99,
+        image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&h=400&fit=crop",
+        category: "Pizza",
+        popular: true,
+        preparationTime: 20,
+        quantity: 1,
+      },
     ],
-    totalPrice: 37.97,
+    totalPrice: 40.97,
     status: "Pending",
     tableNumber: "Table-1",
-    createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: "order-2",
     items: [
-      { ...sampleMenuItems.find((item) => item.id === "pizza-1")!, quantity: 1 },
-      { ...sampleMenuItems.find((item) => item.id === "salad-1")!, quantity: 1 },
+      {
+        id: "burger-2",
+        name: "Veggie Burger",
+        description: "Plant-based patty with avocado and vegan mayo",
+        price: 13.99,
+        image: "https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=500&h=400&fit=crop",
+        category: "Burgers",
+        tags: ["Vegetarian"],
+        preparationTime: 12,
+        quantity: 1,
+      },
     ],
-    totalPrice: 24.98,
+    totalPrice: 13.99,
     status: "Preparing",
     tableNumber: "Table-3",
-    createdAt: new Date(Date.now() - 1000 * 60 * 10), // 10 minutes ago
-  },
-  {
-    id: "order-3",
-    items: [{ ...sampleMenuItems.find((item) => item.id === "dessert-1")!, quantity: 2 }],
-    totalPrice: 15.98,
-    status: "Ready for Delivery",
-    tableNumber: "Table-2",
-    createdAt: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ]
 
